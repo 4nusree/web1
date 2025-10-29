@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduBoard - Educational Platform</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(to right, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+                  url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f') no-repeat center center/cover;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 0;
+    }
+
+    /* Floating bubbles background */
+    .bubbles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0; left: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: transparent;
+      background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #0052D4);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      animation: floatUp linear infinite, colorShift 6s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      100% { transform: translateY(-120vh) scale(1.3); opacity: 0; }
+    }
+
+    @keyframes colorShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .bubble:nth-child(1) { left: 10%; animation-duration: 12s; }
+    .bubble:nth-child(2) { left: 30%; animation-duration: 15s; animation-delay: 2s; }
+    .bubble:nth-child(3) { left: 55%; animation-duration: 18s; animation-delay: 4s; }
+    .bubble:nth-child(4) { left: 75%; animation-duration: 20s; animation-delay: 6s; }
+
+    /* Main container */
+    .page {
+      display: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .page.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(270deg, #ff0080, #ff8c00, #40e0d0, #0052D4, #ff0080);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientFlow 8s ease infinite;
+    }
+
+    @keyframes gradientFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Glassmorphism cards */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Landing Page */
+    #landing .container {
+      text-align: center;
+    }
+
+    #landing h1 {
+      font-size: 4rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    #landing p {
+      font-size: 1.3rem;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0052D4, #4364F7);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-4px) scale(1.05);
+      background: linear-gradient(135deg, #003399, #0052D4);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: #0052D4;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f1f1;
+    }
+
+    /* Login/Register Forms */
+    .auth-box {
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .auth-box h2 {
+      font-size: 2.5rem;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+      text-align: left;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #000;
+      font-weight: 500;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      outline: none;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.3);
+      color: #000;
+    }
+
+    .input-group input::placeholder {
+      color: #555;
+    }
+
+    .eye-icon {
+      position: absolute;
+      right: 12px;
+      top: 38px;
+      cursor: pointer;
+      font-size: 16px;
+      user-select: none;
+    }
+
+    .link-text {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #000;
+    }
+
+    .link-text a {
+      color: #0052D4;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* Dashboard */
+    .dashboard-container {
+      width: 100%;
+      max-width: 1400px;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+      padding: 30px 20px;
+    }
+
+    .sidebar h2 {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-nav button {
+      padding: 12px 15px;
+      border: none;
+      background: transparent;
+      color: #000;
+      font-weight: 500;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-nav button:hover,
+    .sidebar-nav button.active {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Dashboard Content */
+    .dashboard-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .dashboard-header {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .dashboard-section {
+      display: none;
+    }
+
+    .dashboard-section.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      padding: 25px;
+      min-height: 200px;
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: #000;
+    }
+
+    .card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .card li {
+      padding: 8px 0;
+      color: #333;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .card li:last-child {
+      border-bottom: none;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .grade-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-weight: 500;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        top: 0;
+      }
+
+      #landing h1 {
+        font-size: 2.5rem;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Alert message */
+    .alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Bubbles -->
+  <div class="bubbles">
+    <div class="bubble">+</div>
+    <div class="bubble">−</div>
+    <div class="bubble">×</div>
+    <div class="bubble">÷</div>
+  </div>
+
+  <!-- Alert Message -->
+  <div id="alertBox" class="alert"></div>
+
+  <!-- Landing Page -->
+  <div id="landing" class="page active">
+    <div class="container">
+      <h1 class="gradient-text">EDUBOARD</h1>
+      <p>The comprehensive student portal for learning and growth</p>
+      <button class="btn btn-primary" onclick="navigate('login-choice')">Get Started</button>
+    </div>
+  </div>
+
+  <!-- Login Choice Page -->
+  <div id="login-choice" class="page">
+    <div class="glass-card auth-box">
+      <h2 class="gradient-text">Welcome Back</h2>
+      <p style="margin-bottom: 30px; color: #333;">Select your account type to continue</p>
+      <button class="btn btn-primary" style="width: 100%; margin-bottom: 15px;" onclick="navigate('student-login')">Student Login</button>
+      <button class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;" onclick="navigate('teacher-login')">Teacher Login</button>
+      <div class="link-text">
+        <a onclick="navigate('landing')">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Login -->
+  <div id="student-login" class="page">
+    <div class="glass-card auth-box">
+      <h2 class="gradient-text">Student Login</h2>
+      <form onsubmit="handleStudentLogin(event)">
+        <div class="input-group">
+          <label for="student-username">Username</label>
+          <input type="text" id="student-username" placeholder="Enter username" required>
+        </div>
+        <div class="input-group">
+          <label for="student-password">Password</label>
+          <input type="password" id="student-password" placeholder="Enter password" required>
+          <span class="eye-icon" onclick="togglePasswordVisibility('student-password', this)">👁️</span>
+        </div>
+        <button class="btn btn-primary" type="submit" style="width: 100%; margin-top: 10px;">Login</button>
+      </form>
+      <div class="link-text">
+        <a onclick="showAlert('Please contact administrator to reset password')">Forgot Password?</a>
+      </div>
+      <div class="link-text">
+        Don't have an account? <a onclick="navigate('student-register')">Register here</a>
+      </div>
+      <div class="link-text">
+        <a onclick="navigate('login-choice')">← Back</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Registration -->
+  <div id="student-register" class="page">
+    <div class="glass-card auth-box">
+      <h2 class="gradient-text">Student Registration</h2>
+      <form onsubmit="handleStudentRegister(event)">
+        <div class="input-group">
+          <label for="reg-name">Full Name</label>
+          <input type="text" id="reg-name" placeholder="John Doe" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-email">Email ID</label>
+          <input type="email" id="reg-email" placeholder="example@mail.com" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-username">Username</label>
+          <input type="text" id="reg-username" placeholder="john123" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" placeholder="********" required>
+          <span class="eye-icon" onclick="togglePasswordVisibility('reg-password', this)">👁️</span>
+        </div>
+        <div class="input-group">
+          <label for="reg-confirm">Confirm Password</label>
+          <input type="password" id="reg-confirm" placeholder="********" required>
+          <span class="eye-icon" onclick="togglePasswordVisibility('reg-confirm', this)">👁️</span>
+        </div>
+        <button class="btn btn-primary" type="submit" style="width: 100%; margin-top: 10px;">Register</button>
+      </form>
+      <div class="link-text">
+        Already have an account? <a onclick="navigate('student-login')">Login here</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Login -->
+  <div id="teacher-login" class="page">
+    <div class="glass-card auth-box">
+      <h2 class="gradient-text">Teacher Login</h2>
+      <form onsubmit="handleTeacherLogin(event)">
+        <div class="input-group">
+          <label for="teacher-username">Username</label>
+          <input type="text" id="teacher-username" placeholder="Enter username" required>
+        </div>
+        <div class="input-group">
+          <label for="teacher-password">Password</label>
+          <input type="password" id="teacher-password" placeholder="Enter password" required>
+          <span class="eye-icon" onclick="togglePasswordVisibility('teacher-password', this)">👁️</span>
+        </div>
+        <button class="btn btn-primary" type="submit" style="width: 100%; margin-top: 10px;">Login</button>
+      </form>
+      <div class="link-text">
+        <a onclick="showAlert('Please contact administrator to reset password')">Forgot Password?</a>
+      </div>
+      <div class="link-text">
+        <a onclick="navigate('login-choice')">← Back</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Dashboard -->
+  <div id="student-dashboard" class="page">
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <div class="glass-card sidebar">
+        <h2 class="gradient-text">EduBoard</h2>
+        <div class="sidebar-nav">
+          <button class="active" onclick="showDashboardSection('overview')">📊 Overview</button>
+          <button onclick="showDashboardSection('tasks')">📝 Tasks</button>
+          <button onclick="showDashboardSection('subjects')">📚 Subjects</button>
+          <button onclick="showDashboardSection('grades')">📈 Grades</button>
+          <button onclick="showDashboardSection('attendance')">📅 Attendance</button>
+          <button onclick="navigate('landing')">🚪 Logout</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="dashboard-content">
+        <h1 class="gradient-text dashboard-header">Welcome!</h1>
+
+        <!-- Overview Section -->
+        <div id="overview" class="dashboard-section active">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>📋 Quick Stats</h3>
+              <div class="grade-item">
+                <span>Overall Grade:</span>
+                <span style="color: #0052D4; font-weight: bold;">A-</span>
+              </div>
+              <div class="grade-item">
+                <span>Attendance:</span>
+                <span style="color: #4CAF50; font-weight: bold;">85%</span>
+              </div>
+              <div class="grade-item">
+                <span>Pending Tasks:</span>
+                <span style="color: #FFC107; font-weight: bold;">4</span>
+              </div>
+            </div>
+
+            <div class="glass-card card">
+              <h3>🎯 Recent Activities</h3>
+              <ul>
+                <li>Submitted PWA Assignment</li>
+                <li>Attended OSS Lab Session</li>
+                <li>Completed APWS Quiz</li>
+              </ul>
+            </div>
+
+            <div class="glass-card card">
+              <h3>📢 Announcements</h3>
+              <ul>
+                <li>Project deadline: Oct 25</li>
+                <li>Lab exam: Oct 30</li>
+                <li>Parent meeting: Nov 2</li>
+              </ul>
+            </div>
+
+            <div class="glass-card card">
+              <h3>📊 Performance Chart</h3>
+              <canvas id="performanceChart" style="max-height: 150px;"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tasks Section -->
+        <div id="tasks" class="dashboard-section">
+          <div class="glass-card card">
+            <h3>📝 Tasks & Assignments</h3>
+            <ul>
+              <li class="checkbox-item">
+                <input type="checkbox" id="task1">
+                <label for="task1">Complete PWA Assignment</label>
+              </li>
+              <li class="checkbox-item">
+                <input type="checkbox" id="task2">
+                <label for="task2">Submit OSS Report</label>
+              </li>
+              <li class="checkbox-item">
+                <input type="checkbox" id="task3">
+                <label for="task3">APWS Case Study</label>
+              </li>
+              <li class="checkbox-item">
+                <input type="checkbox" id="task4">
+                <label for="task4">Threat Hunting Project</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Subjects Section -->
+        <div id="subjects" class="dashboard-section">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>📘 Progressive Web Application</h3>
+              <p style="color: #333; margin-top: 10px;">Instructor: Dr. Smith</p>
+              <p style="color: #333;">Grade: A</p>
+            </div>
+            <div class="glass-card card">
+              <h3>🔒 Application Web Security</h3>
+              <p style="color: #333; margin-top: 10px;">Instructor: Prof. Johnson</p>
+              <p style="color: #333;">Grade: B+</p>
+            </div>
+            <div class="glass-card card">
+              <h3>💻 Software Engineering</h3>
+              <p style="color: #333; margin-top: 10px;">Instructor: Dr. Williams</p>
+              <p style="color: #333;">Grade: A-</p>
+            </div>
+            <div class="glass-card card">
+              <h3>🎯 Threat Hunting</h3>
+              <p style="color: #333; margin-top: 10px;">Instructor: Dr. Brown</p>
+              <p style="color: #333;">Grade: A+</p>
+            </div>
+            <div class="glass-card card">
+              <h3>🖥️ Operating System Security</h3>
+              <p style="color: #333; margin-top: 10px;">Instructor: Prof. Davis</p>
+              <p style="color: #333;">Grade: B</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grades Section -->
+        <div id="grades" class="dashboard-section">
+          <div class="glass-card card">
+            <h3>📈 Grades & Reports</h3>
+            <div class="grade-item">
+              <span>Progressive Web Application</span>
+              <span style="color: #4CAF50; font-weight: bold;">A</span>
+            </div>
+            <div class="grade-item">
+              <span>Application Web Security</span>
+              <span style="color: #4CAF50; font-weight: bold;">B+</span>
+            </div>
+            <div class="grade-item">
+              <span>Software Engineering</span>
+              <span style="color: #4CAF50; font-weight: bold;">A-</span>
+            </div>
+            <div class="grade-item">
+              <span>Threat Hunting</span>
+              <span style="color: #4CAF50; font-weight: bold;">A+</span>
+            </div>
+            <div class="grade-item">
+              <span>Operating System Security</span>
+              <span style="color: #FFC107; font-weight: bold;">B</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance Section -->
+        <div id="attendance" class="dashboard-section">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>📊 Attendance Overview</h3>
+              <canvas id="attendanceChart"></canvas>
+            </div>
+            <div class="glass-card card">
+              <h3>📅 Attendance Details</h3>
+              <div class="grade-item">
+                <span>Present</span>
+                <span style="color: #4CAF50; font-weight: bold;">80 days</span>
+              </div>
+              <div class="grade-item">
+                <span>Absent</span>
+                <span style="color: #F44336; font-weight: bold;">10 days</span>
+              </div>
+              <div class="grade-item">
+                <span>Late</span>
+                <span style="color: #FFC107; font-weight: bold;">10 days</span>
+              </div>
+              <div class="grade-item">
+                <span>Total Percentage</span>
+                <span style="color: #0052D4; font-weight: bold;">85%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Dashboard -->
+  <div id="teacher-dashboard" class="page">
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <div class="glass-card sidebar">
+        <h2 class="gradient-text">EduBoard</h2>
+        <div class="sidebar-nav">
+          <button class="active" onclick="showTeacherSection('t-overview')">📊 Overview</button>
+          <button onclick="showTeacherSection('t-classes')">👥 Classes</button>
+          <button onclick="showTeacherSection('t-assignments')">📝 Assignments</button>
+          <button onclick="showTeacherSection('t-performance')">📈 Performance</button>
+          <button onclick="navigate('landing')">🚪 Logout</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="dashboard-content">
+        <h1 class="gradient-text dashboard-header">Welcome, Teacher!</h1>
+
+        <!-- Overview Section -->
+        <div id="t-overview" class="dashboard-section active">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>📚 Today's Schedule</h3>
+              <ul>
+                <li>10:00 AM - Web Security Lecture</li>
+                <li>2:00 PM - OSS Lab Session</li>
+                <li>4:00 PM - Project Reviews</li>
+              </ul>
+            </div>
+
+            <div class="glass-card card">
+              <h3>📋 Pending Reviews</h3>
+              <div class="grade-item">
+                <span>Assignments to Grade:</span>
+                <span style="color: #FFC107; font-weight: bold;">15</span>
+              </div>
+              <div class="grade-item">
+                <span>Projects to Review:</span>
+                <span style="color: #FFC107; font-weight: bold;">8</span>
+              </div>
+            </div>
+
+            <div class="glass-card card">
+              <h3>📢 Announcements</h3>
+              <ul>
+                <li>Faculty meeting tomorrow</li>
+                <li>Submit grades by Oct 28</li>
+                <li>Midterm exam next week</li>
+              </ul>
+            </div>
+
+            <div class="glass-card card">
+              <h3>📊 Class Performance</h3>
+              <canvas id="teacherChart" style="max-height: 150px;"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Classes Section -->
+        <div id="t-classes" class="dashboard-section">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>👥 Class A - BCA</h3>
+              <p style="color: #333; margin-top: 10px;">Students: 45</p>
+              <p style="color: #333;">Average Grade: 75%</p>
+            </div>
+            <div class="glass-card card">
+              <h3>👥 Class B - MCA</h3>
+              <p style="color: #333; margin-top: 10px;">Students: 38</p>
+              <p style="color: #333;">Average Grade: 82%</p>
+            </div>
+            <div class="glass-card card">
+              <h3>👥 Class C - MSc CS</h3>
+              <p style="color: #333; margin-top: 10px;">Students: 30</p>
+              <p style="color: #333;">Average Grade: 68%</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assignments Section -->
+        <div id="t-assignments" class="dashboard-section">
+          <div class="glass-card card">
+            <h3>📝 Recent Assignments</h3>
+            <ul>
+              <li>PWA Project - Due: Oct 25</li>
+              <li>OSS Research Paper - Due: Oct 28</li>
+              <li>Security Audit Report - Due: Oct 30</li>
+              <li>Database Design Project - Due: Nov 5</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Performance Section -->
+        <div id="t-performance" class="dashboard-section">
+          <div class="glass-card card">
+            <h3>📈 Student Performance Analytics</h3>
+            <canvas id="performanceBarChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Navigation
+    function navigate(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    // Toggle password visibility
+    function togglePasswordVisibility(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        icon.textContent = '👁️';
+      }
+    }
+
+    // Show alert
+    function showAlert(message) {
+      const alert = document.getElementById('alertBox');
+      alert.textContent = message;
+      alert.classList.add('show');
+      setTimeout(() => alert.classList.remove('show'), 3000);
+    }
+
+    // Handle student login
+    function handleStudentLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('student-username').value;
+      showAlert(`Welcome back, ${username}!`);
+      setTimeout(() => navigate('student-dashboard'), 1000);
+    }
+
+    // Handle student registration
+    function handleStudentRegister(e) {
+      e.preventDefault();
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+      
+      if (password !== confirm) {
+        showAlert('Passwords do not match!');
+        return;
+      }
+      
+      const username = document.getElementById('reg-username').value;
+      showAlert(`Registration successful! Welcome, ${username}!`);
+      setTimeout(() => navigate('student-dashboard'), 1000);
+    }
+
+    // Handle teacher login
+    function handleTeacherLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('teacher-username').value;
+      showAlert(`Welcome back, Professor ${username}!`);
+      setTimeout(() => navigate('teacher-dashboard'), 1000);
+    }
+
+    // Show dashboard sections
+    function showDashboardSection(sectionId) {
+      // Update active button
+      document.querySelectorAll('.sidebar-nav button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Show section
+      document.querySelectorAll('#student-dashboard .dashboard-section').forEach(sec => {
+        sec.classList.remove('active');
+      });
+      document.getElementById(sectionId).classList.add('active');
+    }
+
+    // Show teacher dashboard sections
+    function showTeacherSection(sectionId) {
+      // Update active button
+      document.querySelectorAll('.sidebar-nav button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Show section
+      document.querySelectorAll('#teacher-dashboard .dashboard-section').forEach(sec => {
+        sec.classList.remove('active');
+      });
+      document.getElementById(sectionId).classList.add('active');
+    }
+
+    // Initialize Charts when dashboard is loaded
+    let chartsInitialized = false;
+    
+    function initializeCharts() {
+      if (chartsInitialized) return;
+      chartsInitialized = true;
+
+      // Performance Chart (Student Dashboard)
+      const perfCtx = document.getElementById('performanceChart');
+      if (perfCtx) {
+        new Chart(perfCtx, {
+          type: 'line',
+          data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+              label: 'Performance',
+              data: [75, 78, 82, 85],
+              borderColor: '#0052D4',
+              backgroundColor: 'rgba(0, 82, 212, 0.1)',
+              tension: 0.4,
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              y: { 
+                beginAtZero: true,
+                max: 100,
+                ticks: { color: '#000' }
+              },
+              x: { ticks: { color: '#000' } }
+            }
+          }
+        });
+      }
+
+      // Attendance Chart (Student Dashboard)
+      const attCtx = document.getElementById('attendanceChart');
+      if (attCtx) {
+        new Chart(attCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Present', 'Absent', 'Late'],
+            datasets: [{
+              data: [80, 10, 10],
+              backgroundColor: ['#4CAF50', '#F44336', '#FFC107'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { color: '#000', padding: 15 }
+              }
+            }
+          }
+        });
+      }
+
+      // Teacher Chart
+      const teacherCtx = document.getElementById('teacherChart');
+      if (teacherCtx) {
+        new Chart(teacherCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Class A', 'Class B', 'Class C'],
+            datasets: [{
+              label: 'Average Marks',
+              data: [75, 82, 68],
+              backgroundColor: ['#6FB1FC', '#4CAF50', '#FFC107'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              y: { 
+                beginAtZero: true,
+                max: 100,
+                ticks: { color: '#000' }
+              },
+              x: { ticks: { color: '#000' } }
+            }
+          }
+        });
+      }
+
+      // Performance Bar Chart (Teacher Dashboard)
+      const perfBarCtx = document.getElementById('performanceBarChart');
+      if (perfBarCtx) {
+        new Chart(perfBarCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Excellent', 'Good', 'Average', 'Below Average'],
+            datasets: [{
+              label: 'Number of Students',
+              data: [25, 40, 20, 15],
+              backgroundColor: ['#4CAF50', '#6FB1FC', '#FFC107', '#F44336'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              y: { 
+                beginAtZero: true,
+                ticks: { color: '#000' }
+              },
+              x: { ticks: { color: '#000' } }
+            }
+          }
+        });
+      }
+    }
+
+    // Initialize charts after a short delay to ensure DOM is ready
+    setTimeout(initializeCharts, 500);
+
+    // Add task completion functionality
+    document.addEventListener('change', function(e) {
+      if (e.target.type === 'checkbox' && e.target.id.startsWith('task')) {
+        if (e.target.checked) {
+          e.target.parentElement.style.opacity = '0.6';
+          e.target.nextElementSibling.style.textDecoration = 'line-through';
+          showAlert('Task marked as complete!');
+        } else {
+          e.target.parentElement.style.opacity = '1';
+          e.target.nextElementSibling.style.textDecoration = 'none';
+        }
+      }
+    });
+
+    // Add keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      // ESC key to go back to landing
+      if (e.key === 'Escape') {
+        const currentPage = document.querySelector('.page.active');
+        if (currentPage && currentPage.id !== 'landing') {
+          navigate('landing');
+        }
+      }
+    });
+  </script>
+
+</body>
+</html
+

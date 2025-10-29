@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - EduBoard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+
+  
+  <div id="alertBox" class="alert"></div>
+
+ 
+  <main class="auth-container">
+    <div class="glass-card auth-box">
+      <h2 class="gradient-text">Welcome Back</h2>
+      <p class="auth-subtitle">Select your account type to continue</p>
+      
+      <div class="auth-buttons">
+        <button class="btn btn-primary" onclick="showLoginForm('student')">
+          <span class="btn-icon">●</span>
+          Student Login
+        </button>
+        <button class="btn btn-secondary" onclick="showLoginForm('teacher')">
+          <span class="btn-icon">●</span>
+          Teacher Login
+        </button>
+      </div>
+
+      <div class="link-text">
+        <a href="index.html">← Back to Home</a>
+      </div>
+    </div>
+
+    
+    <div id="student-login-form" class="glass-card auth-box" style="display: none;">
+      <h2 class="gradient-text">Student Login</h2>
+      <form onsubmit="handleStudentLogin(event)">
+        <div class="input-group">
+          <label for="student-use=name">Username</label>
+          <input type="text" id="student-username" placeholder="Enter username" required>
+        </div>
+        <div class="input-group">
+          <label for="student-password">Password</label>
+          <input type="password" id="student-password" placeholder="Enter password" required>
+          <span class="eye-icon" onclick="togglePasswordVisibility('student-password', this)">○</span>
+        </div>
+        <button class="btn btn-primary" type="submit">Login</button>
+      </form>
+      <div class="link-text">
+        <a onclick="showAlert('Please contact administrator to reset password')">Forgot Password?</a>
+      </div>
+      <div class="link-text">
+        Don't have an account? <a href="registration.html">Register here</a>
+      </div>
+      <div class="link-text">
+        <a onclick="showLoginChoice()">← Back</a>
+      </div>
+    </div>
+
+    
+    <div id="teacher-login-form" class="glass-card auth-box" style="display: none;">
+      <h2 class="gradient-text">Teacher Login</h2>
+      <form onsubmit="handleTeacherLogin(event)">
+        <div class="input-group">
+          <label for="teacher-username">Username</label>
+          <input type="text" id="teacher-username" placeholder="Enter username" required>
+        </div>
+        <div class="input-group">
+          <label for="teacher-password">Password</label>
+          <input type="password" id="teacher-password" placeholder="Enter password" required>
+          <span class="eye-icon" onclick="togglePasswordVisibility('teacher-password', this)">○</span>
+        </div>
+        <button class="btn btn-primary" type="submit">Login</button>
+      </form>
+      <div class="link-text">
+        <a onclick="showAlert('Please contact administrator to reset password')">Forgot Password?</a>
+      </div>
+      <div class="link-text">
+        <a onclick="showLoginChoice()">← Back</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

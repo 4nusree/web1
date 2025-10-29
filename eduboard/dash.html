@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduBoard Dashboard</title>
+<style>
+  * { box-sizing:border-box; font-family:'Segoe UI',sans-serif; margin:0; padding:0; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(to right, rgba(255,255,255,0.85), rgba(255,255,255,0.85)),
+                url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f') no-repeat center center/cover;
+    display:flex; justify-content:center; align-items:flex-start; padding-top:50px; overflow-x:hidden;
+  }
+  body::after {
+    content:""; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:0;
+  }
+  .dashboard-container {
+    position:relative; z-index:2; width:95%; max-width:1200px; display:grid;
+    grid-template-columns: 250px 1fr; gap:20px;
+  }
+  /* Sidebar */
+  .sidebar {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 20px; padding:30px 20px; border:1px solid rgba(0,0,0,0.2);
+    display:flex; flex-direction:column; gap:20px; height:80vh;
+  }
+  .sidebar h2 {
+    font-size:1.8rem; font-weight:bold; margin-bottom:20px;
+    background: linear-gradient(270deg, #ff0080, #ff8c00, #40e0d0, #0052D4, #ff0080);
+    background-size:600% 600%; -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    animation: gradientFlow 8s ease infinite;
+  }
+  .sidebar a { text-decoration:none; color:#000; font-weight:500; padding:10px; border-radius:10px; transition:0.3s; display:block; cursor:pointer; }
+  .sidebar a:hover { background: rgba(255,255,255,0.3); }
+
+  /* Main content */
+  .main-content { display:flex; flex-direction:column; gap:20px; }
+  .header {
+    font-size:2rem; font-weight:bold;
+    background: linear-gradient(270deg, #ff0080, #ff8c00, #40e0d0, #0052D4, #ff0080);
+    background-size:600% 600%; -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    animation: gradientFlow 8s ease infinite;
+  }
+
+  /* Cards */
+  .login-card, .courses-card, .messages-card, .settings-card {
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(15px);
+    border-radius:20px; padding:30px; color:#000;
+    border:1px solid rgba(0,0,0,0.2); max-width:500px; margin-top:20px; position:relative;
+  }
+  h3 { text-align:center; margin-bottom:20px; }
+  .input-group { margin-bottom:15px; position:relative; }
+  label { display:block; margin-bottom:5px; font-weight:500; }
+  input { width:100%; padding:10px 40px 10px 10px; border-radius:10px; border:1px solid rgba(0,0,0,0.3); outline:none; }
+  .eye-icon {
+    position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    cursor:pointer; font-size:18px; user-select:none;
+  }
+  button {
+    width:100%; padding:12px; font-weight:bold; border:none; border-radius:40px;
+    background: linear-gradient(135deg,#0052D4,#4364F7); color:#fff; cursor:pointer; transition:0.3s;
+  }
+  button:hover { background:#003399; transform:scale(1.03); }
+
+  ul { list-style-type: disc; padding-left:20px; margin-top:10px; }
+  li { margin-bottom:8px; font-weight:500; cursor:pointer; }
+
+  .dropdown { margin-top:15px; }
+  .dropdown select { width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,0.3); }
+
+  @keyframes gradientFlow { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+</style>
+</head>
+<body>
+
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>EduBoard</h2>
+    <a onclick="showDashboard('teacher')">Teacher</a>
+    <a onclick="showDashboard('student')">Student</a>
+    <a onclick="showDashboard('courses')">Courses</a>
+    <a onclick="showDashboard('messages')">Messages</a>
+    <a onclick="showDashboard('settings')">Settings</a>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <div class="header">Welcome to EduBoard</div>
+
+    <!-- Teacher Dashboard -->
+    <div id="teacher-dashboard" class="login-card">
+      <h3>Teacher Login</h3>
+      <div class="input-group">
+        <label for="teacher-username">Username</label>
+        <input type="text" id="teacher-username" placeholder="Enter username">
+      </div>
+      <div class="input-group">
+        <label for="teacher-password">Password</label>
+        <input type="password" id="teacher-password" placeholder="Enter password">
+        <span class="eye-icon" onclick="togglePassword('teacher-password', this)">👁️</span>
+      </div>
+      <button onclick="alert('Teacher logged in!')">Login</button>
+    </div>
+
+    <!-- Student Dashboard -->
+    <div id="student-dashboard" class="login-card" style="display:none;">
+      <h3>Student Login</h3>
+      <div class="input-group">
+        <label for="campus-id">Campus ID</label>
+        <input type="number" id="campus-id" placeholder="Enter campus ID">
+      </div>
+      <div class="input-group">
+        <label for="student-password">Password</label>
+        <input type="password" id="student-password" placeholder="Enter password">
+        <span class="eye-icon" onclick="togglePassword('student-password', this)">👁️</span>
+      </div>
+      <button onclick="alert('Student logged in!')">Login</button>
+    </div>
+
+    <!-- Courses Dashboard -->
+    <div id="courses-dashboard" class="courses-card" style="display:none;">
+      <h3>Courses & Specializations</h3>
+      <div class="dropdown">
+        <label for="specialization">Select Specialization:</label>
+        <select id="specialization" onchange="showSubjects()">
+          <option value="">--Select--</option>
+          <option value="bca1">BCA (Cyber Security, Ethical Hacking, Digital Forensics)</option>
+          <option value="bca2">BCA (AI, Robotics, Machine Learning)</option>
+          <option value="bca3">BCA (Cyber Security, Cloud Computing, DevOps)</option>
+          <option value="bca4">BCA (Cloud Computing, Ethical Hacking, Digital Forensics)</option>
+        </select>
+      </div>
+      <ul id="subjects-list"></ul>
+    </div>
+
+    <!-- Messages Dashboard -->
+    <div id="messages-dashboard" class="messages-card" style="display:none;">
+      <h3>Notifications</h3>
+      <ul>
+        <li>Math Assignment due tomorrow</li>
+        <li>Operating System lab submission pending</li>
+        <li>Machine Learning quiz scheduled on 25 Oct</li>
+        <li>Cyber Security project presentation on 28 Oct</li>
+      </ul>
+    </div>
+
+    <!-- Settings Dashboard -->
+    <div id="settings-dashboard" class="settings-card" style="display:none;">
+      <h3>Settings</h3>
+      <div class="dropdown">
+        <label for="settings-options">Choose Action:</label>
+        <select id="settings-options" onchange="handleSettings(this.value)">
+          <option value="">--Select--</option>
+          <option value="logout">Logout</option>
+          <option value="exit">Exit</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const subjects = {
+    bca1: ["Cyber Security", "Ethical Hacking", "Digital Forensics"],
+    bca2: ["Artificial Intelligence", "Robotics", "Machine Learning"],
+    bca3: ["Cyber Security", "Cloud Computing", "DevOps"],
+    bca4: ["Cloud Computing", "Ethical Hacking", "Digital Forensics"]
+  };
+
+  function showDashboard(userType){
+    const dashboards = ['teacher-dashboard','student-dashboard','courses-dashboard','messages-dashboard','settings-dashboard'];
+    dashboards.forEach(id => document.getElementById(id).style.display='none');
+    if(userType==='teacher') document.getElementById('teacher-dashboard').style.display='block';
+    if(userType==='student') document.getElementById('student-dashboard').style.display='block';
+    if(userType==='courses') document.getElementById('courses-dashboard').style.display='block';
+    if(userType==='messages') document.getElementById('messages-dashboard').style.display='block';
+    if(userType==='settings') document.getElementById('settings-dashboard').style.display='block';
+  }
+
+  function togglePassword(inputId, icon){
+    const input = document.getElementById(inputId);
+    if(input.type === 'password'){ input.type = 'text'; icon.textContent = '🙈'; }
+    else { input.type = 'password'; icon.textContent = '👁️'; }
+  }
+
+  function showSubjects(){
+    const sel = document.getElementById('specialization').value;
+    const list = document.getElementById('subjects-list');
+    list.innerHTML = '';
+    if(sel && subjects[sel]){
+      subjects[sel].forEach(sub => {
+        const li = document.createElement('li');
+        li.textContent = sub;
+        list.appendChild(li);
+      });
+    }
+  }
+
+  function handleSettings(value){
+    if(value === 'logout') alert('Logging out...');
+    if(value === 'exit') alert('Exiting...');
+    document.getElementById('settings-options').value = '';
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - EduBoard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div id="alertBox" class="alert"></div>
+
+  
+  <div class="dashboard-page">
+    <div class="dashboard-container">
+   
+      <aside class="glass-card sidebar">
+        <h2 class="gradient-text">EduBoard</h2>
+        <nav class="sidebar-nav">
+          <button class="active" data-section="overview">
+            <span class="nav-icon">◆</span>
+            Overview
+          </button>
+          <button data-section="tasks">
+            <span class="nav-icon">□</span>
+            Tasks
+          </button>
+          <button data-section="subjects">
+            <span class="nav-icon">▣</span>
+            Subjects
+          </button>
+          <button data-section="grades">
+            <span class="nav-icon">▲</span>
+            Grades
+          </button>
+          <button data-section="attendance">
+            <span class="nav-icon">◇</span>
+            Attendance
+          </button>
+          <button onclick="logout()">
+            <span class="nav-icon">⊗</span>
+            Logout
+          </button>
+        </nav>
+      </aside>
+
+      
+      <main class="dashboard-content">
+        <header>
+          <h1 class="gradient-text dashboard-header">Welcome, Student!</h1>
+        </header>
+
+       
+        <section id="overview" class="dashboard-section active">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>Quick Stats</h3>
+              <div class="grade-item">
+                <span>Overall Grade:</span>
+                <span class="stat-value grade-a">A-</span>
+              </div>
+              <div class="grade-item">
+                <span>Attendance:</span>
+                <span class="stat-value grade-good">85%</span>
+              </div>
+              <div class="grade-item">
+                <span>Pending Tasks:</span>
+                <span class="stat-value grade-warning">4</span>
+              </div>
+            </div>
+
+            <div class="glass-card card">
+              <h3>Recent Activities</h3>
+              <ul>
+                <li>Submitted PWA Assignment</li>
+                <li>Attended OSS Lab Session</li>
+                <li>Completed APWS Quiz</li>
+              </ul>
+            </div>
+
+            <div class="glass-card card">
+              <h3>Announcements</h3>
+              <ul>
+                <li>Project deadline: Oct 25</li>
+                <li>Lab exam: Oct 30</li>
+                <li>Parent meeting: Nov 2</li>
+              </ul>
+            </div>
+
+            <div class="glass-card card">
+              <h3>Performance Chart</h3>
+              <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        
+        <section id="tasks" class="dashboard-section">
+          <div class="glass-card card">
+            <h3>Tasks & Assignments</h3>
+            <ul>
+              <li class="checkbox-item">
+                <input type="checkbox" id="task1">
+                <label for="task1">Complete PWA Assignment</label>
+              </li>
+              <li class="checkbox-item">
+                <input type="checkbox" id="task2">
+                <label for="task2">Submit OSS Report</label>
+              </li>
+              <li class="checkbox-item">
+                <input type="checkbox" id="task3">
+                <label for="task3">APWS Case Study</label>
+              </li>
+              <li class="checkbox-item">
+                <input type="checkbox" id="task4">
+                <label for="task4">Threat Hunting Project</label>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+       
+        <section id="subjects" class="dashboard-section">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>Progressive Web Application</h3>
+              <p class="subject-info">Instructor: Dr. Smith</p>
+              <p class="subject-info">Grade: A</p>
+            </div>
+            <div class="glass-card card">
+              <h3>Application Web Security</h3>
+              <p class="subject-info">Instructor: Prof. Johnson</p>
+              <p class="subject-info">Grade: B+</p>
+            </div>
+            <div class="glass-card card">
+              <h3>Software Engineering</h3>
+              <p class="subject-info">Instructor: Dr. Williams</p>
+              <p class="subject-info">Grade: A-</p>
+            </div>
+            <div class="glass-card card">
+              <h3>Threat Hunting</h3>
+              <p class="subject-info">Instructor: Dr. Brown</p>
+              <p class="subject-info">Grade: A+</p>
+            </div>
+            <div class="glass-card card">
+              <h3>Operating System Security</h3>
+              <p class="subject-info">Instructor: Prof. Davis</p>
+              <p class="subject-info">Grade: B</p>
+            </div>
+          </div>
+        </section>
+
+       
+        <section id="grades" class="dashboard-section">
+          <div class="glass-card card">
+            <h3>Grades & Reports</h3>
+            <div class="grade-item">
+              <span>Progressive Web Application</span>
+              <span class="stat-value grade-good">A</span>
+            </div>
+            <div class="grade-item">
+              <span>Application Web Security</span>
+              <span class="stat-value grade-good">B+</span>
+            </div>
+            <div class="grade-item">
+              <span>Software Engineering</span>
+              <span class="stat-value grade-good">A-</span>
+            </div>
+            <div class="grade-item">
+              <span>Threat Hunting</span>
+              <span class="stat-value grade-good">A+</span>
+            </div>
+            <div class="grade-item">
+              <span>Operating System Security</span>
+              <span class="stat-value grade-warning">B</span>
+            </div>
+          </div>
+        </section>
+
+      
+        <section id="attendance" class="dashboard-section">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>Attendance Overview</h3>
+              <div class="chart-container chart-container-doughnut">
+                <canvas id="attendanceChart"></canvas>
+              </div>
+            </div>
+            <div class="glass-card card">
+              <h3>Attendance Details</h3>
+              <div class="grade-item">
+                <span>Present</span>
+                <span class="stat-value grade-good">80 days</span>
+              </div>
+              <div class="grade-item">
+                <span>Absent</span>
+                <span class="stat-value grade-bad">10 days</span>
+              </div>
+              <div class="grade-item">
+                <span>Late</span>
+                <span class="stat-value grade-warning">10 days</span>
+              </div>
+              <div class="grade-item">
+                <span>Total Percentage</span>
+                <span class="stat-value grade-a">85%</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

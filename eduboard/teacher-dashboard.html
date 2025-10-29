@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard - EduBoard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+ 
+  <div id="alertBox" class="alert"></div>
+
+  
+  <div class="dashboard-page">
+    <div class="dashboard-container">
+     
+      <aside class="glass-card sidebar">
+        <h2 class="gradient-text">EduBoard</h2>
+        <nav class="sidebar-nav">
+          <button class="active" data-section="t-overview">
+            <span class="nav-icon">◆</span>
+            Overview
+          </button>
+          <button data-section="t-classes">
+            <span class="nav-icon">●</span>
+            Classes
+          </button>
+          <button data-section="t-assignments">
+            <span class="nav-icon">□</span>
+            Assignments
+          </button>
+          <button data-section="t-performance">
+            <span class="nav-icon">▲</span>
+            Performance
+          </button>
+          <button onclick="logout()">
+            <span class="nav-icon">⊗</span>
+            Logout
+          </button>
+        </nav>
+      </aside>
+
+      
+      <main class="dashboard-content">
+        <header>
+          <h1 class="gradient-text dashboard-header">Welcome, Teacher!</h1>
+        </header>
+
+       
+        <section id="t-overview" class="dashboard-section active">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>Today's Schedule</h3>
+              <ul>
+                <li>10:00 AM - Web Security Lecture</li>
+                <li>2:00 PM - OSS Lab Session</li>
+                <li>4:00 PM - Project Reviews</li>
+              </ul>
+            </div>
+
+            <div class="glass-card card">
+              <h3>Pending Reviews</h3>
+              <div class="grade-item">
+                <span>Assignments to Grade:</span>
+                <span class="stat-value grade-warning">15</span>
+              </div>
+              <div class="grade-item">
+                <span>Projects to Review:</span>
+                <span class="stat-value grade-warning">8</span>
+              </div>
+            </div>
+
+            <div class="glass-card card">
+              <h3>Announcements</h3>
+              <ul>
+                <li>Faculty meeting tomorrow</li>
+                <li>Submit grades by Oct 28</li>
+                <li>Midterm exam next week</li>
+              </ul>
+            </div>
+
+            <div class="glass-card card">
+              <h3>Class Performance</h3>
+              <div class="chart-container">
+                <canvas id="teacherChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        
+        <section id="t-classes" class="dashboard-section">
+          <div class="cards-grid">
+            <div class="glass-card card">
+              <h3>Class A - BCA</h3>
+              <p class="subject-info">Students: 45</p>
+              <p class="subject-info">Average Grade: 75%</p>
+            </div>
+            <div class="glass-card card">
+              <h3>Class B - MCA</h3>
+              <p class="subject-info">Students: 38</p>
+              <p class="subject-info">Average Grade: 82%</p>
+            </div>
+            <div class="glass-card card">
+              <h3>Class C - MSc CS</h3>
+              <p class="subject-info">Students: 30</p>
+              <p class="subject-info">Average Grade: 68%</p>
+            </div>
+          </div>
+        </section>
+
+        
+        <section id="t-assignments" class="dashboard-section">
+          <div class="glass-card card">
+            <h3>Recent Assignments</h3>
+            <ul>
+              <li>PWA Project - Due: Oct 25</li>
+              <li>OSS Research Paper - Due: Oct 28</li>
+              <li>Security Audit Report - Due: Oct 30</li>
+              <li>Database Design Project - Due: Nov 5</li>
+            </ul>
+          </div>
+        </section>
+
+       
+        <section id="t-performance" class="dashboard-section">
+          <div class="glass-card card">
+            <h3>Student Performance Analytics</h3>
+            <div class="chart-container chart-container-large">
+              <canvas id="performanceBarChart"></canvas>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

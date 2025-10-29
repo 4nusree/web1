@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Login | EduBoard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(to right, #0052D4, #4364F7, #6FB1FC);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px 30px;
+      border-radius: 20px;
+      width: 320px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+      color: white;
+      text-align: center;
+    }
+
+    .login-box h2 {
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      background-color: #ffffff;
+      color: #0052D4;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #f1f1f1;
+    }
+
+    .links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .links a {
+      color: #fff;
+      text-decoration: underline;
+      cursor: pointer;
+      display: inline-block;
+      margin: 5px;
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup-box {
+      background: white;
+      color: #333;
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .popup-box p {
+      margin-bottom: 20px;
+    }
+
+    .popup-box button {
+      padding: 8px 16px;
+      background: #0052D4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .popup-box button:hover {
+      background: #0039a3;
+    }
+  </style>
+</head>
+<body>
+
+  
+  <div class="popup-overlay" id="popup">
+    <div class="popup-box">
+      <p>Please contact the administrator to reset your password.</p>
+      <button onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
+  <div class="login-box">
+    <h2>Student Login</h2>
+    <form action="/student login.html" method="POST">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required />
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+     <button id="loginBtn" class="btn" type="submit" onclick="window.location.href='stdntdash.html'">Login</button>
+     <button class="btn" type="button" onclick="window.location.href='stdntreg.html'">Register</button>
+    </form>
+    <div class="links">
+      <a onclick="openPopup()">Forgot Password?</a>
+    </div>
+  </div>
+
+  <script>
+    function openPopup() {
+      document.getElementById("popup").style.display = "flex";
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+  </script>
+
+<script>
+  document.getElementById("loginBtn").addEventListener("click", function(event) {
+    event.preventDefault(); 
+    window.location.href = "stdntdash.html"; 
+  });
+</script>
+
+</body>
+</html>
